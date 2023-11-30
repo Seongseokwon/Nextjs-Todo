@@ -1,95 +1,74 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import Image from "next/image";
+import styles from "./page.module.css";
 
-export default function Home() {
+interface Todo {
+  id: number;
+  title: string;
+  description: string;
+  importance: "LOW" | "MEDIUM" | "HIGH";
+  completed: boolean;
+  todoImgUrl: string;
+}
+
+export default async function Home() {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/todos");
+  const todos: Todo[] = await res.json();
+
+  console.log(todos);
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    <div className={styles.container}>
+      <nav className="nav">
+        <button type="button">Search</button>
+        <button type="button">Add Todo</button>
+      </nav>
+      <main>
+        <section className="welcome-section">
+          <header>
+            <h2>오늘 할 일</h2>
+            <p>달성율</p>
+          </header>
+          <main>안녕하세요 회원님. 오늘은 3개의 할일이 남아 있습니다.</main>
+          <footer>2023년 11월 30일</footer>
+        </section>
+        <section className="todo-list-section">
+          <header>
+            <nav>
+              <ul>
+                <li>DAY</li>
+                <li>WEEK</li>
+                <li>MONTH</li>
+              </ul>
+            </nav>
+            {/* 햄버거 메뉴 보류 */}
+          </header>
+          <main>
+            {/* todo item section */}
+            {todos.map((todo) => (
+              <div key={todo.id}>
+                <Image
+                  src={todo.todoImgUrl}
+                  alt="todoImage"
+                  width={164}
+                  height={128}
+                />
+                <div>
+                  <section className="todo-info">
+                    <b>{todo.title}</b>
+                    <p>
+                      <span>{todo.importance}</span>
+                      <span>남은기간</span>
+                    </p>
+                  </section>
+                  <section className="todo-control">
+                    <button type="button">Go to Detail</button>
+                    <input type="checkbox" value="" />
+                  </section>
+                </div>
+              </div>
+            ))}
+          </main>
+        </section>
+      </main>
+    </div>
+  );
 }
